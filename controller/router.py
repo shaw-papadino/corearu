@@ -49,7 +49,7 @@ def handle_message(event):
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
     print(uid)
-    print(user_status.keys())
+    print(user_status)
     if (uid in user_status.keys()):
         #useridが登録されている場合
         isbn = get_book_service.get(message)
@@ -57,7 +57,7 @@ def handle_message(event):
 
     else:
         if (message == "蔵書を検索する"):
-            user_status.setdefault(uid, 1)
+            user_status[uid] = 1
             reply = "本のタイトルを入力してください"
             line_bot_api.reply_message(
                 event.reply_token,
