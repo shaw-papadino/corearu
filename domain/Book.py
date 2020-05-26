@@ -3,7 +3,7 @@ from pydantic import BaseModel, validator, ValidationError
 
 class Book(BaseModel):
     title: str
-    isbn: str
+    isbn: str = ""
     authors: List[str] = []
 
     @validator("isbn")
