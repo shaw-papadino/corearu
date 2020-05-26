@@ -11,8 +11,8 @@ class GetBookService:
     def get(self, title):
         #googlebooksapi
         book = Book(title = title)
-        query = query_type[0] + ":" + book.title
-        response = requests.get(gurl + query)
+        query = self.query_type[0] + ":" + book.title
+        response = requests.get(self.gurl + query)
         if (response.status_code == 200):
             book_info = response.getjson()
             book.authors = book_info["authors"]
