@@ -45,7 +45,8 @@ user_status = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
-    uid = event.source.userId
+    print(event.source)
+    uid = event.source["userId"]
     if (uid in user_status.keys()):
         #useridが登録されている場合
         isbn = get_book_service.get(message)
