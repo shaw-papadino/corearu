@@ -8,6 +8,10 @@ from linebot.models import (
         MessageEvent, TextMessage, TextSendMessage
 )
 
+from linebot.exceptions import (
+    InvalidSignatureError
+)
+
 from entity import CHANNEL_SECRET
 
 router = APIRouter()
@@ -19,7 +23,9 @@ async def callback(req: Request):
 
     body = (await req.body()).decode("utf-8")
     print(body)
+    print(type(body))
     print(signature)
+    print(type(signature))
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
