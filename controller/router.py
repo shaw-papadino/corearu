@@ -48,7 +48,7 @@ def handle_message(event):
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
-    print(uid)
+    print(type(uid))
     print(user_status)
     if (uid in user_status.keys()):
         #useridが登録されている場合
