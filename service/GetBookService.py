@@ -8,7 +8,7 @@ class GetBookService:
     """
     query_type = ["intitle", "inauthor", "inpublisher", "subject", "isbn", "lccn", "oclc"]
     gurl = "https://www.googleapis.com/books/v1/volumes?q="
-    async def find(self, title):
+    async def get(self, title):
         #googlebooksapi
         book = Book(title = title)
         query = query_type[0] + ":" + book.title

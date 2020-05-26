@@ -18,9 +18,17 @@ from entity import (
         CHANNEL_ACCESS_TOKEN, CHANNEL_SECRET
 )
 
+from service.GetBookService import GetBookService
+from service.GetLibraryService import  (
+        GetZoushoService, GetLibraryService
+)
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 router = APIRouter()
 handler = WebhookHandler(CHANNEL_SECRET)
+
+get_book_service = GetBookService()
+get_library_service = GetLibraryService()
+get_zousho_service = GetZoushoService()
 
 @router.post("/callback")
 async def callback(req: Request):
@@ -33,25 +41,30 @@ async def callback(req: Request):
         print("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
     return {"status": "OK"}
-
+user_status = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
-    if (message == "蔵書を検索する"):
-        reply = "本のタイトルを入力してください"
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=reply))
+    uid = event.source.userId
+    if (uid in user_status.keys()):
+        #useridが登録されている場合
+        isbn = get_book_service.get(message)
+        print(isbn)
+
     else:
-        print(event)
-        message_content = line_bot_api.get_message_content(event.message.id)
-        print(message_content)
+        if (message == "蔵書を検索する"):
+            user_status.setdefault(event.source.userId, 1)
+            reply = "本のタイトルを入力してください"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply))
+        else:
+            print(event)
 
     # line_bot_api.push_message(event.source.user_id, TextSendMessage(text=event.message.text))
 """
 [] 蔵書検索モード
-[] 著者 -> 本
 [] 本 -> isbn
-[]
-[]
+[] 位置情報 -> 最寄りの図書館
+[] isbn 最寄りの図書館 -> 蔵書
 """

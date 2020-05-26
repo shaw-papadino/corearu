@@ -11,6 +11,7 @@ class GetLibraryService:
         query = "?appkey=" + APP_KEY + "&geocode=" + geocode[0] + "," + geocode[1] + "&limit=" + str(limit)
         response = await requests.get(library_url + query)
         if (response.status_code == 200):
+            print("todo: library")
 
 class GetZoushoService:
     """
