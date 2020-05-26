@@ -50,6 +50,7 @@ def handle_message(event):
     uid = event.source.user_id
     if (uid in user_status.keys()):
         #useridが登録されている場合
+        print(user_status.keys())
         isbn = get_book_service.get(message)
         print(isbn)
 
