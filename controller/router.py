@@ -42,14 +42,15 @@ async def callback(req: Request):
         abort(400)
     return {"status": "OK"}
 user_status = {}
+c = 0
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
-    print(type(uid))
-    print(user_status)
+    print(c)
+    c += 1
     if (uid in user_status.keys()):
         #useridが登録されている場合
         isbn = get_book_service.get(message)
