@@ -52,8 +52,7 @@ def handle_message(event):
     if (uid in user_status.keys()):
         #useridが登録されている場合
         print(user_status.keys())
-        isbn = BackgroundTasks.add_task(get_book_service.get, message)
-        # isbn = get_book_service.get(message)
+        isbn = get_book_service.get(message)
         print(isbn)
 
     else:
