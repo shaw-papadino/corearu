@@ -45,7 +45,8 @@ user_status = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
-    print(event.source.sender_id())
+    print(event.source.sender_id)
+    print(event.source.user_id)
     uid = event.source["userId"]
     if (uid in user_status.keys()):
         #useridが登録されている場合
