@@ -11,8 +11,6 @@ from entity import (
 
 from controller.router import router, handler
 
-line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
-handler = handler 
 app = FastAPI()
 # router 登録処理
 app.include_router(router)

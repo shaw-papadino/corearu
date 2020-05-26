@@ -2,7 +2,9 @@ from fastapi import (
         APIRouter, Request
 )
 
-from linebot import WebhookHandler
+from linebot import (
+        LineBotApi, WebhookHandler
+)
 
 from linebot.models import (
         MessageEvent, TextMessage, TextSendMessage
@@ -12,8 +14,11 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 
-from entity import CHANNEL_SECRET
+from entity import (
+        CHANNEL_ACCESS_TOKEN, CHANNEL_SECRET
+)
 
+line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 router = APIRouter()
 handler = WebhookHandler(CHANNEL_SECRET)
 
@@ -22,10 +27,6 @@ async def callback(req: Request):
     signature = req.headers.get("X-Line-Signature")
 
     body = (await req.body()).decode("utf-8")
-    print(body)
-    print(type(body))
-    print(signature)
-    print(type(signature))
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
@@ -35,7 +36,6 @@ async def callback(req: Request):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    print(event.message.text)
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text))
