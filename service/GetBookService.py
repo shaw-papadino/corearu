@@ -8,11 +8,11 @@ class GetBookService:
     """
     query_type = ["intitle", "inauthor", "inpublisher", "subject", "isbn", "lccn", "oclc"]
     gurl = "https://www.googleapis.com/books/v1/volumes?q="
-    async def get(self, title):
+    def get(self, title):
         #googlebooksapi
         book = Book(title = title)
         query = query_type[0] + ":" + book.title
-        response = await requests.get(gurl + query)
+        response = requests.get(gurl + query)
         if (response.status_code == 200):
             book_info = response.getjson()
             book.authors = book_info["authors"]
