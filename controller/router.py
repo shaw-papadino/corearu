@@ -43,7 +43,7 @@ async def callback(req: Request):
     return {"status": "OK"}
 user_status = {}
 @handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
+def handle_message(event, background_tasks: BackgroundTasks):
     message = event.message.text
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意
