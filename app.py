@@ -4,6 +4,10 @@ from linebot import (
         LineBotApi, WebhookHandler
 )
 
+from linebot.exceptions import (
+    InvalidSignatureError
+)
+
 from entity import (
         CHANNEL_ACCESS_TOKEN, CHANNEL_SECRET
 )
