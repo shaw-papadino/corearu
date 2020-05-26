@@ -44,6 +44,8 @@ def handle_message(event):
             TextSendMessage(text=reply))
     else:
         print(event)
+        message_content = line_bot_api.get_message_content(event.message.id)
+        print(message_content)
 
     # line_bot_api.push_message(event.source.user_id, TextSendMessage(text=event.message.text))
 """
