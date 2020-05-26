@@ -42,15 +42,12 @@ async def callback(req: Request):
         abort(400)
     return {"status": "OK"}
 user_status = {}
-c = 0
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
-    print(c)
-    c += 1
     if (uid in user_status.keys()):
         #useridが登録されている場合
         isbn = get_book_service.get(message)
@@ -59,6 +56,7 @@ def handle_message(event):
     else:
         if (message == "蔵書を検索する"):
             user_status[uid] = 1
+            print(user_status)
             reply = "本のタイトルを入力してください"
             line_bot_api.reply_message(
                 event.reply_token,
