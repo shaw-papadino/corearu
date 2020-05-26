@@ -52,7 +52,7 @@ def handle_message(event, background_tasks: BackgroundTasks):
     if (uid in user_status.keys()):
         #useridが登録されている場合
         print(user_status.keys())
-        isbn = background_tasks.add_task(get_book_service, message)
+        isbn = background_tasks.add_task(get_book_service.get, message)
         # isbn = get_book_service.get(message)
         print(isbn)
 
