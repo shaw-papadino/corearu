@@ -14,7 +14,7 @@ class GetBookService:
         query = self.query_type[0] + ":" + book.title
         response = requests.get(self.gurl + query)
         if (response.status_code == 200):
-            book_info = response.getjson()
+            book_info = response.json()
             book.authors = book_info["authors"]
             book.isbn = book_info["industryIdentifiers"][1]["identifier"]
 
