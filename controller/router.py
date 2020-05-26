@@ -55,7 +55,7 @@ def handle_message(event):
 
     else:
         if (message == "蔵書を検索する"):
-            user_status.setdefault(event.source.userId, 1)
+            user_status.setdefault(uid, 1)
             reply = "本のタイトルを入力してください"
             line_bot_api.reply_message(
                 event.reply_token,
