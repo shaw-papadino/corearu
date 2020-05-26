@@ -44,6 +44,7 @@ async def callback(req: Request):
 user_status = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    global user_status
     message = event.message.text
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意

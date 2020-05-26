@@ -16,9 +16,15 @@ class GetBookService:
         if (response.status_code == 200):
             book_info = response.json()
             print(book_info)
-            book.authors = book_info["authors"]
-            book.isbn = book_info["industryIdentifiers"][1]["identifier"]
+            if (book_info["totalItems"] > 0):
+
+                book.authors = book_info["authors"]
+                book.isbn = book_info["industryIdentifiers"][1]["identifier"]
+            else:
+                # ない場合 {'kind': 'books#volumes', 'totalItems': 0}
+                # rakutenapi
+                pass
+
 
         return book.isbn
 
-        #rakutenapi
