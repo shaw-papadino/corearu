@@ -48,6 +48,8 @@ def handle_message(event):
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
+    print(uid)
+    print(user_status.keys())
     if (uid in user_status.keys()):
         #useridが登録されている場合
         isbn = get_book_service.get(message)
