@@ -9,6 +9,7 @@ uvicorn = "*"
 gunicorn = "*"
 line-bot-sdk = "*"
 requests-async = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"

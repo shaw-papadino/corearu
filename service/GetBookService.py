@@ -1,4 +1,4 @@
-import requests_async as requests
+import requests
 from domain.Book import Book 
 
 class GetBookService:
@@ -17,7 +17,6 @@ class GetBookService:
             book_info = response.getjson()
             book.authors = book_info["authors"]
             book.isbn = book_info["industryIdentifiers"][1]["identifier"]
-        print(book)
 
         return book.isbn
 
