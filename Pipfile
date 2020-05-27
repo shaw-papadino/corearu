@@ -11,6 +11,7 @@ line-bot-sdk = "*"
 requests-async = "*"
 requests = "*"
 sqlalchemy = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"
