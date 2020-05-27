@@ -21,4 +21,6 @@ class GetZoushoService:
     """
     zousho_url = "http://api.calil.jp/check"
     def get_zousho(self, isbn, systemids):
-        query = "?appkey" + APP_KEY + 
+        systemids = list(set(systemids))
+        for systemid in systemids:
+            query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemids=" + systemid + "&format=json" 

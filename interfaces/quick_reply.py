@@ -6,7 +6,7 @@ quick_reply = QuickReply(
         items = [
             QuickReplyButton(
                 action = LocationAction,
-                label = 現在地を送る
+                label = "Location"
                 )
             ]
         )

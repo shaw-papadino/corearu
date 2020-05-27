@@ -129,13 +129,13 @@ def handle_message(event):
         if (user.is_status == 1):
             # isbn検索
             isbn = get_book_service.get(message)
-            status = user.is_status += 1
+            status = user.is_status + 1
             user = update(uid, isbn, status)
             print(user)
             reply = "下のボタンを押して現在地を送信してね"
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text=reply, quick_reply))
+                TextSendMessage(text=reply, quick_reply=quick_reply))
         elif (user.is_status == 2):
             # 図書館蔵書検索
             pass
