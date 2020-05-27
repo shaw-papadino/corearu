@@ -10,6 +10,10 @@ from entity import (
 )
 
 from controller.router import router, handler
+from controller.db_create import SessionLocal, engine
+from controller.User import User, Base
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 # router 登録処理

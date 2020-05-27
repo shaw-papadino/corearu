@@ -11,7 +11,8 @@ class GetLibraryService:
         query = "?appkey=" + APP_KEY + "&geocode=" + geocode[0] + "," + geocode[1] + "&limit=" + str(limit)
         response = requests.get(self.library_url + query)
         if (response.status_code == 200):
-            print("todo: library")
+            lib_info = response.json()
+            print(lib_info)
 
 class GetZoushoService:
     """
@@ -19,3 +20,5 @@ class GetZoushoService:
     Output: 
     """
     zousho_url = "http://api.calil.jp/check"
+    def get_zousho(self, isbn, systemids):
+        query = "?appkey" + APP_KEY + 
