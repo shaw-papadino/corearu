@@ -7,7 +7,7 @@ from linebot import (
 )
 
 from linebot.models import (
-        MessageEvent, TextMessage, TextSendMessage
+        MessageEvent, TextMessage, TextSendMessage,
         LocationMessage
 )
 
