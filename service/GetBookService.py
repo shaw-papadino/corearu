@@ -17,8 +17,7 @@ class GetBookService:
             book_info = response.json()
             print(book_info)
             if (book_info["totalItems"] > 0):
-
-                book.authors = book_info["items"][0]["authors"]
+                book.authors = book_info["items"][0]["volumeInfo"]["authors"]
                 book.isbn = book_info["items"][0]["industryIdentifiers"][1]["identifier"]
             else:
                 # ない場合 {'kind': 'books#volumes', 'totalItems': 0}
