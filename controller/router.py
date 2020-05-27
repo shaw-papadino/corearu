@@ -73,7 +73,7 @@ def create(userid: str, db: Session = SessionLocal):
     # print(user)
     return user
 
-def update(user_id: str, user_book: str, db: Session = SessionLocal):
+def update(user_id: str, user_book: str, user_status: int, db: Session = SessionLocal):
     user = dao.update_user(user_id, user_book, db)
     return user
 
@@ -129,7 +129,8 @@ def handle_message(event):
         if (user.is_status == 1):
             # isbn検索
             isbn = get_book_service.get(message)
-            user = update(uid, isbn, user.is_status += 1)
+            status = user.is_status += 1
+            user = update(uid, isbn, status)
             print(user)
             reply = "下のボタンを押して現在地を送信してね"
             line_bot_api.reply_message(
