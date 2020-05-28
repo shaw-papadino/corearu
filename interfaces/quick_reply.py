@@ -5,8 +5,7 @@ from linebot.models import (
 quick_reply = QuickReply(
         items = [
             QuickReplyButton(
-                action = LocationAction,
-                label = "Location"
+                action = LocationAction(label = "Location")
                 )
             ]
         )
