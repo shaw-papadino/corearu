@@ -69,7 +69,7 @@ def get(user_id: str, db: Session = SessionLocal):
     return user
 
 def create(user_id: str, db: Session = SessionLocal):
-    user = dao.create_user(user_id = user_aid, db = db)
+    user = dao.create_user(user_id = user_id, db = db)
     # print(user)
     return user
 
