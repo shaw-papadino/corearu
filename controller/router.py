@@ -68,8 +68,8 @@ def get(user_id: str, db: Session = SessionLocal):
     user = dao.get_user(user_id, db)
     return user
 
-def create(userid: str, db: Session = SessionLocal):
-    user = dao.create_user(user_id = userid, db = db)
+def create(user_id: str, db: Session = SessionLocal):
+    user = dao.create_user(user_id = user_aid, db = db)
     # print(user)
     return user
 
@@ -113,7 +113,7 @@ def handle_message(event):
     user = get(uid)
     if (user is  None):
         if (message == "蔵書を検索する"):
-            user = create(UserCreate(uid))
+            user = create(uid)
             reply = "本のタイトルを入力してください"
             line_bot_api.reply_message(
                 event.reply_token,
