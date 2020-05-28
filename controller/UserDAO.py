@@ -21,9 +21,9 @@ def create_user(user_id: str, db: Session):
     user = get_user(user_id, db)
     return user
 
-def update_user(user_id: str, user_book: str, db: Session = Depends(get_db)):
-    user = get(db, user_id)
+def update_user(user_id: str, user_book: str, db: Session):
+    user = get_user(user_id, db)
     user.book = user_book
     db.commit()
-    user = get_user(user_id)
+    user = get_user(user_id,db)
     return user

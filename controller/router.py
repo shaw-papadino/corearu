@@ -111,6 +111,39 @@ def handle_message(event):
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
     user = get(uid)
+    if (message == "蔵書を検索する"):
+        # ユーザー登録処理
+        if (user is  None):
+            user = create(uid)
+        reply = "本のタイトルを入力してください"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply))
+    elif (user is None):
+        reply = "「蔵書を検索する」と入力してください"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply))
+
+    elif (user.is_status == 1):
+        # isbn検索
+        isbn = get_book_service.get(message)
+        status = user.is_status + 1
+        user = update(uid, isbn, status)
+        print(user)
+        reply = "下のボタンを押して現在地を送信してね"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply, quick_reply=quick_reply))
+
+    elif (user.is_status == 2):
+        # 図書館蔵書検索
+        reply = "蔵書検索をします"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply))
+    """
+    user = get(uid)
     if (user is  None):
         if (message == "蔵書を検索する"):
             user = create(uid)
@@ -138,11 +171,8 @@ def handle_message(event):
         elif (user.is_status == 2):
             # 図書館蔵書検索
             pass
-
-    # line_bot_api.push_message(event.source.user_id, TextSendMessage(text=event.message.text))
-"""
-[] 蔵書検索モード
-[] 本 -> isbn
-[] 位置情報 -> 最寄りの図書館
-[] isbn 最寄りの図書館 -> 蔵書
-"""
+    [] 蔵書検索モード
+    [] 本 -> isbn
+    [] 位置情報 -> 最寄りの図書館
+    [] isbn 最寄りの図書館 -> 蔵書
+    """
