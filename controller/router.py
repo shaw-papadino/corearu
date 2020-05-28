@@ -110,7 +110,6 @@ def handle_message(event):
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
-    print(user_status)
     user = get(uid)
     if (user is  None):
         if (message == "蔵書を検索する"):
