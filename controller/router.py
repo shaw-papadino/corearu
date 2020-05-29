@@ -97,7 +97,7 @@ def location_message(event):
         # 整形したデータをユーザーに返却する
         # 図書館の名前、ある/なし、距離(できたらgooglemapのリンク)
         print(zousho_info)
-        reply = zousho_info[0]["formal"] + ":" + zousho_info[0]["status"]
+        reply = "できてるよ" 
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))

@@ -100,7 +100,7 @@ class GetZoushoService:
                 pass
         # 距離の近い順にsort
         print(output)
-        output.sort(key = lambda x: x["distance"])
+        output[0].sort(key = lambda x: x["distance"])
         return output
 
     def polling(self, url):
