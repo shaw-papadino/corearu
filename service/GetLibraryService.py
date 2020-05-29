@@ -18,10 +18,13 @@ class GetLibraryService:
     def adapt(self, lib_info):
         # 不要な要素を削除して返す
         l = ["libkey", "distance", "geocode", "systemid", "address", "formal"]
-        lib_update = {}
-        for k,v in lib_info.items():
-            if(k in l):
-                lib_update.setdefault(k,v)
+        lib_update = []
+        info_update = {}
+        for d in lib_info:
+            for k, v in d.items():
+                if(k in l):
+                    info_update.setdefault(k,v)
+            lib_update.append(info_update)
         return lib_update
 
         # return list(map(lambda x: x.pop(["category"], x.pop(["city"], x.pop(["short"], x.pop(["pref"], x.pop(["primary"], x.pop(["faid"], x.pop(["libid"], x.pop(["tel"], x.pop(["systemname"], x.pop(["isil"], x.pop(["post"], x.pop(["url_pc"], lib_c))
