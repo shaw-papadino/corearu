@@ -98,9 +98,11 @@ class GetZoushoService:
         return output
 
     def polling(self, url):
+        print(url)
         while True:
             response = requests.get(url)
             if (response.status_code == 200):
+                print(response.text)
                 res = response.json()
                 if (res["continue"] == 0):
                     return res
