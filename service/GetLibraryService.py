@@ -13,6 +13,8 @@ class GetLibraryService:
         response = requests.get(self.library_url + query)
         if (response.status_code == 200):
             lib_info = response.json()
+
+            print(f"lib:{lib_info}")
             return lib_info
             
     def adapt(self, lib_info):
@@ -77,6 +79,7 @@ class GetZoushoService:
     """
     zousho_url = "http://api.calil.jp/check"
     def get(self, isbn, lib_info):
+        print(f"zousho:{lib_info}")
         system_ids = list(map(lambda x: x["systemid"], lib_info))
         squery = ",".join(system_ids)
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
@@ -98,12 +101,11 @@ class GetZoushoService:
         return output
 
     def polling(self, url):
-        print(url)
         while True:
             response = requests.get(url)
             if (response.status_code == 200):
-                print(response.text)
-                res = response.json()
+                res = response.text.strip("();").json()
+                # res = response.json()
                 if (res["continue"] == 0):
                     return res
             time.sleep(1)
