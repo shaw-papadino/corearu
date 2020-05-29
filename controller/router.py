@@ -74,7 +74,7 @@ def create(user_id: str, db: Session = SessionLocal):
     return user
 
 def update(user_id: str, user_book: str, user_status: int, db: Session = SessionLocal):
-    user = dao.update_user(user_id, user_book, db)
+    user = dao.update_user(user_id, user_book, user_status, db)
     return user
 
 @router.get("/users")
