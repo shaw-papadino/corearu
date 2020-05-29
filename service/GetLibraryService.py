@@ -95,7 +95,7 @@ class GetZoushoService:
                         "status":libkeys.get(x["libkey"]),
                         "address":x["address"],
                         "distance":x["distance"]
-                        } if x["libkey"] in libkeys else {} )))
+                        } if x["libkey"] in libkeys else {},lib_info)))
             else:
                 pass
         # 距離の近い順にsort
