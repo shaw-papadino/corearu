@@ -19,7 +19,7 @@ class GetLibraryService:
         # 不要な要素を削除して返す
         l = ["libkey", "distance", "geocode", "systemid", "address", "formal"]
         lib_update = {}
-        for k,v in lib_c.items():
+        for k,v in lib_info.items():
             if(k in l):
                 lib_update.setdefault(k,v)
         return lib_update
