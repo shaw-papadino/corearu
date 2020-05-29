@@ -99,13 +99,37 @@ async def callback(req: Request):
 def location_message(event):
     geocode = [event.message.latitude, event.message.longitude]
     uid = event.source.user_id
-    print(user_status)
+    print(geocode)
     user = get(uid)
-    get_library_service(user.book, geocode)
+    if (user is None):
+        reply = "「蔵書を検索する」と入力してください"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply))
+
+    elif (user.is_status == 1):
+        reply = "本のタイトルを入力してください"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply))
+    elif (user.is_status == 2):
+        # 最寄りの図書館を検索する
+        lib_info = get_library_service.get(geocode)
+        # 不要なものを削除
+        lib_info = get_library_service.adapt(lib_info)
+        # 受け取った本が蔵書されているかのチェック
+        zosho_info = get_zousho_service.get(user.isbn, lib_info)
+        # 最寄りの図書館の情報と蔵書状況を整形
+        # 整形したデータをユーザーに返却する
+        # 図書館の名前、ある/なし、距離(できたらgooglemapのリンク)
+        print(zousho_info)
+        reply = "取得できてるよ"
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply))
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    global user_status
     message = event.message.text
     # print(event.source.sender_id)
     # jsonのkeyとは違うから注意
