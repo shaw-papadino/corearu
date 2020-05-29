@@ -81,10 +81,14 @@ class GetZoushoService:
     def get(self, isbn, lib_info):
         system_ids = list(map(lambda x: x["systemid"], lib_info))
         squery = ",".join(system_ids)
+        
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
         response = self.polling(self.zousho_url + query)
         print(response)
         output = []
+        """
+        この辺のロジック見直す
+        """
         for id in system_ids:
             if (response.get("books") is not None):
                 libkeys = response["books"][isbn][id]["libkey"]
@@ -100,6 +104,9 @@ class GetZoushoService:
                 pass
         # 距離の近い順にsort
         print(output)
+        """
+        libkeyが入ってない => {} の対応
+        """
         output[0].sort(key = lambda x: x.get("distance"))
         return output
 
