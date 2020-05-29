@@ -17,19 +17,21 @@ class GetLibraryService:
             print(f"lib:{lib_info}")
             return lib_info
             
-    def adapt(self, lib_info):
+    def adapt(self, lib_info,l = ["libkey", "distance", "geocode", "systemid", "address", "formal"]
+):
         # 不要な要素を削除して返す
-        l = ["libkey", "distance", "geocode", "systemid", "address", "formal"]
+        """
+        先頭のjsonだけ取得しているエラー
+        """
         lib_update = []
-        info_update = {}
         for d in lib_info:
+            info_update = {}
             for k, v in d.items():
                 if(k in l):
                     info_update.setdefault(k,v)
             lib_update.append(info_update)
         return lib_update
 
-        # return list(map(lambda x: x.pop(["category"], x.pop(["city"], x.pop(["short"], x.pop(["pref"], x.pop(["primary"], x.pop(["faid"], x.pop(["libid"], x.pop(["tel"], x.pop(["systemname"], x.pop(["isil"], x.pop(["post"], x.pop(["url_pc"], lib_c))
 
 class GetZoushoService:
     """
@@ -104,8 +106,14 @@ class GetZoushoService:
         while True:
             response = requests.get(url)
             if (response.status_code == 200):
-                res = response.text.strip("();").json()
+                """
+                str => dict
+                """
+                res = response.text.strip("();")
                 # res = response.json()
                 if (res["continue"] == 0):
                     return res
             time.sleep(1)
+
+if __name__=="__main__":
+    test_adapt()
