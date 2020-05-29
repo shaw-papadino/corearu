@@ -153,8 +153,9 @@ def handle_message(event):
         # isbn検索
         isbn = get_book_service.get(message)
         status = user.is_status + 1
+        print(status)
         user = update(uid, isbn, status)
-        print(user)
+        print(user.is_status)
         reply = "下のボタンを押して現在地を送信してね"
         line_bot_api.reply_message(
             event.reply_token,
