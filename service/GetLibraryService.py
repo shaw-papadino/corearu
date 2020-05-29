@@ -80,7 +80,8 @@ class GetZoushoService:
         system_ids = list(map(lambda x: x["systemid"], lib_info))
         squery = ",".join(system_ids)
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
-        response = polling(requests.get(self.zousho_url + query))
+        response = self.polling(requests.get(self.zousho_url + query))
+        print(response)
         output = []
         for id in system_ids:
             libkeys = response["book"][isbn][id]["libkey"]
