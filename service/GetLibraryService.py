@@ -1,4 +1,5 @@
 import requests
+import json
 import time
 from domain.Library import Library
 from entity import APP_KEY
@@ -20,9 +21,6 @@ class GetLibraryService:
     def adapt(self, lib_info,l = ["libkey", "distance", "geocode", "systemid", "address", "formal"]
 ):
         # 不要な要素を削除して返す
-        """
-        先頭のjsonだけ取得しているエラー
-        """
         lib_update = []
         for d in lib_info:
             info_update = {}
@@ -110,6 +108,7 @@ class GetZoushoService:
                 str => dict
                 """
                 res = response.text.strip("();")
+                res = json.loads(res)
                 # res = response.json()
                 if (res["continue"] == 0):
                     return res
