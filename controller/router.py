@@ -97,7 +97,7 @@ async def callback(req: Request):
 
 @handler.add(MessageEvent, message=LocationMessage)
 def location_message(event):
-    geocode = [event.message.latitude, event.message.longitude]
+    geocode = [str(event.message.longitude), str(event.message.latitude)]
     uid = event.source.user_id
     print(geocode)
     user = get(uid)
