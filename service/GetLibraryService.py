@@ -80,7 +80,7 @@ class GetZoushoService:
         system_ids = list(map(lambda x: x["systemid"], lib_info))
         squery = ",".join(system_ids)
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
-        response = self.polling(requests.get(self.zousho_url + query))
+        response = self.polling(self.zousho_url + query)
         print(response)
         output = []
         for id in system_ids:
@@ -97,9 +97,9 @@ class GetZoushoService:
         output.sort(key = lambda x: x["distance"])
         return output
 
-    def polling(self, f):
+    def polling(self, url):
         while True:
-            response = f()
+            response = requests.get(url)
             if (response.status_code == 200):
                 res = response.json()
                 if (res["continue"] == 0):
