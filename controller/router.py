@@ -92,7 +92,7 @@ def location_message(event):
         # 不要なものを削除
         lib_info = get_library_service.adapt(lib_info)
         # 受け取った本が蔵書されているかのチェック
-        zosho_info = get_zousho_service.get(user.book, lib_info)
+        zousho_info = get_zousho_service.get(user.book, lib_info)
         # 最寄りの図書館の情報と蔵書状況を整形
         # 整形したデータをユーザーに返却する
         # 図書館の名前、ある/なし、距離(できたらgooglemapのリンク)
