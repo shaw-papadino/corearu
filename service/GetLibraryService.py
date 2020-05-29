@@ -79,7 +79,6 @@ class GetZoushoService:
     """
     zousho_url = "http://api.calil.jp/check"
     def get(self, isbn, lib_info):
-        print(f"zousho:{lib_info}")
         system_ids = list(map(lambda x: x["systemid"], lib_info))
         squery = ",".join(system_ids)
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
@@ -87,15 +86,18 @@ class GetZoushoService:
         print(response)
         output = []
         for id in system_ids:
-            libkeys = response["book"][isbn][id]["libkey"]
-            if (len(libkeys) != 0):
-                # libkey毎に必要な値をlib_infoから取得する
-                output.append(list(map(lambda x: {
-                    "formal":x["formal"],
-                    "status":libkeys.get(x["libkey"]),
-                    "address":x["address"],
-                    "distance":x["distance"]
-                    } if x["libkey"] in libkeys else {} )))
+            if (response.get("book") is not None):
+                libkeys = response["book"][isbn][id]["libkey"]
+                if (len(libkeys) != 0):
+                    # libkey毎に必要な値をlib_infoから取得する
+                    output.append(list(map(lambda x: {
+                        "formal":x["formal"],
+                        "status":libkeys.get(x["libkey"]),
+                        "address":x["address"],
+                        "distance":x["distance"]
+                        } if x["libkey"] in libkeys else {} )))
+            else:
+                pass
         # 距離の近い順にsort
         output.sort(key = lambda x: x["distance"])
         return output
@@ -104,9 +106,6 @@ class GetZoushoService:
         while True:
             response = requests.get(url)
             if (response.status_code == 200):
-                """
-                str => dict
-                """
                 res = response.text.strip("();")
                 res = json.loads(res)
                 # res = response.json()

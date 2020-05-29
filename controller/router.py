@@ -39,31 +39,6 @@ get_book_service = GetBookService()
 get_library_service = GetLibraryService()
 get_zousho_service = GetZoushoService()
 
-
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
-# 
-# async def get_user(user_id: str, db: Session = Depends(get_db)):
-#     return db.query(User).filter(User.id == user_id).first()
-# 
-# async def create_user(userIn: UserCreate, db: Session = Depends(get_db)):
-#     user = User(id = userIn.id)
-#     db.add(user)
-#     db.commit()
-#     user = get_user(userIn.id)
-#     return user
-# 
-# async def update_user(user_id: str, user_book: str, db: Session = Depends(get_db)):
-#     user = get(db, user_id)
-#     user.book = user_book
-#     db.commit()
-#     user = get_user(user_id)
-#     return user
-
 def get(user_id: str, db: Session = SessionLocal):
     user = dao.get_user(user_id, db)
     return user
@@ -79,7 +54,6 @@ def update(user_id: str, user_book: str, user_status: int, db: Session = Session
 
 @router.get("/users")
 def users(db: Session = Depends(dao.get_db)):
-    # user = create("1")
     user = get("1")
     print(user)
 
@@ -123,7 +97,7 @@ def location_message(event):
         # 整形したデータをユーザーに返却する
         # 図書館の名前、ある/なし、距離(できたらgooglemapのリンク)
         print(zousho_info)
-        reply = "取得できてるよ"
+        reply = zousho_info[0]["formal"] + ":" + zousho_info[0]["status"]
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
