@@ -61,7 +61,7 @@ class GetZoushoService:
         
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
         response = self.polling(self.zousho_url + query)
-        print(response)
+        print(f"res:{response}")
         """
         この辺のロジック見直す
 
@@ -111,8 +111,10 @@ class GetZoushoService:
             for id in system_ids:
                 libkeys = response["books"][isbn][id]["libkey"]
                 if (len(libkeys) != 0):
+                    print(f"libkeys:{libkeys}")
                     # libkey毎に必要な値をlib_infoから取得する
                     for info in lib_info:
+                        print(f"info:{info}")
                         if (info.get("libkey", "") in libkeys):
                             out_info = {
                                             "formal":info.get("formal"),
