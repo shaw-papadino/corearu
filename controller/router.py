@@ -73,7 +73,7 @@ async def callback(req: Request):
 def location_message(event):
     geocode = [str(event.message.longitude), str(event.message.latitude)]
     uid = event.source.user_id
-    print(geocode)
+    # print(geocode)
     user = get(uid)
     if (user is None):
         reply = "「蔵書を検索する」と入力してください"

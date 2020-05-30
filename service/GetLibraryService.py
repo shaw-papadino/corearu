@@ -15,7 +15,7 @@ class GetLibraryService:
         if (response.status_code == 200):
             lib_info = response.json()
 
-            print(f"lib:{lib_info}")
+            # print(f"lib:{lib_info}")
             return lib_info
             
     def adapt(self, lib_info,l = ["libkey", "distance", "geocode", "systemid", "address", "formal"]
@@ -44,29 +44,6 @@ class GetZoushoService:
                 [x]"formal": "笠松町松枝公民館図書室"
             }
         ]
-    response:
-        {
-          "session": "f9f33b9178f5556fff533845c8eaa4d6",
-          "continue": 0,
-          "books": {
-            [isbn]"4834000826": {
-              [systemid]"Tokyo_NDL": {
-                "status": "Cache",
-                "libkey": {
-                  [libkey]"国際子ども図書館": [status]"蔵書あり"
-                },
-                "reserveurl": "https://ndlonline.ndl.go.jp/#!/detail/R300000001-I000002726097-00"
-              },
-              "Aomori_Pref": {
-                "status": "Cache",
-                "libkey": {
-                  "青県図": "貸出可"
-                },
-                "reserveurl": "https://api.calil.jp/reserve?id=ae595257bb5e59c66f0ef813a2f6a381"
-              }
-            }
-          }
-        }
     Output: 
         [
             {
@@ -85,29 +62,77 @@ class GetZoushoService:
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
         response = self.polling(self.zousho_url + query)
         print(response)
-        output = []
         """
         この辺のロジック見直す
+
+        {
+          "session": "2d83ba454f7a8bb9aad5b35c122f1773",
+          "continue": 0,
+          "books": {
+            "9784591159224": {
+                  "Univ_Teikyo": {
+                    "status": "OK",
+                    "libkey": {},
+                    "reserveurl": ""
+                  },
+                  "Tokyo_Setagaya": {
+                    "status": "OK",
+                    "libkey": {
+                      "世田谷": "貸出可",
+                      "深沢": "貸出中",
+                      "経堂": "貸出可"
+                    },
+                    "reserveurl": "https://libweb.city.setagaya.tokyo.jp/cgi-bin/detail?NUM=005942406&CTG=1&RTN=01&TM=142142838"
+                  },
+                  "Kanagawa_Kawasaki": {
+                    "status": "OK",
+                    "libkey": {
+                      "宮前": "貸出可",
+                      "麻生": "貸出可",
+                      "幸": "貸出可",
+                      "中原": "貸出可",
+                      "川崎": "貸出可",
+                      "大師": "貸出可",
+                      "多摩": "貸出可"
+                    },
+                    "reserveurl": "http://www.library.city.kawasaki.jp/clis/detail?NUM=003059147&CTG=1&RTN=01&TM=142142979"
+                  },
+                  "Univ_Tamabi": {
+                    "status": "OK",
+                    "libkey": {},
+                    "reserveurl": ""
+                  }
+            }
+          }
+        }
         """
-        for id in system_ids:
-            if (response.get("books") is not None):
+        output = []
+        if (response.get("books") is not None):
+            for id in system_ids:
                 libkeys = response["books"][isbn][id]["libkey"]
                 if (len(libkeys) != 0):
                     # libkey毎に必要な値をlib_infoから取得する
-                    output.append(list(map(lambda x: {
-                        "formal":x["formal"],
-                        "status":libkeys.get(x["libkey"]),
-                        "address":x["address"],
-                        "distance":x["distance"]
-                        } if x["libkey"] in libkeys else {},lib_info)))
-            else:
-                pass
-        # 距離の近い順にsort
+                    for info in lib_info:
+                        if (info.get("libkey", "") in libkeys):
+                            out_info = {
+                                            "formal":info.get("formal"),
+                                            "status":libkeys.get(info.get("libkey")),
+                                            "address":info.get("address"),
+                                            "distance":info.get("distance")
+                                        }
+                            output.append(out_info)
+
+                    # output.append(list(map(lambda x: {
+                    #     "formal":x["formal"],
+                    #     "status":libkeys.get(x["libkey"]),
+                    #     "address":x["address"],
+                    #     "distance":x["distance"]
+                    #     } if x["libkey"] in libkeys else {},lib_info)))
+            # 距離の近い順にsort
+            output.sort(key = lambda x: x.get("distance"))
+        else:
+            pass
         print(output)
-        """
-        libkeyが入ってない => {} の対応
-        """
-        output[0].sort(key = lambda x: x.get("distance"))
         return output
 
     def polling(self, url):
