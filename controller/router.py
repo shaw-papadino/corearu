@@ -96,7 +96,7 @@ def location_message(event):
         print(zousho_info)
         column_info = []
         for i in zousho_info:
-            column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"])]})
+            column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
         reply_template = create_template(create_columns(column_info))
         # 最寄りの図書館の情報と蔵書状況を整形
         # print(zousho_info)
