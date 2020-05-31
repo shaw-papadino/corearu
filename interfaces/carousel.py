@@ -16,7 +16,7 @@ def create_columns(column_info):
     """
     columns = []
     for i in column_info:
-        colomns.append(CarouselColumn(
+        columns.append(CarouselColumn(
                 thumbnail_image_url = i.get("image", ""),
                 title = i.get("title", ""),
                 text = i.get("text", ""),
