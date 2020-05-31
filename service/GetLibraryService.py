@@ -18,7 +18,7 @@ class GetLibraryService:
             # print(f"lib:{lib_info}")
             return lib_info
             
-    def adapt(self, lib_info,l = ["libkey", "distance", "geocode", "systemid", "address", "formal"]
+    def adapt(self, lib_info,l = ["libid", "libkey", "distance", "geocode", "systemid", "address", "formal"]
 ):
         # 不要な要素を削除して返す
         lib_update = []
