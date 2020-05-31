@@ -119,11 +119,12 @@ class GetZoushoService:
                             out_info = {
                                             "systemid":info.get("systemid"),
                                             "libkey":info.get("libkey"),
+                                            "libid":info.get("libid"),
                                             "formal":info.get("formal"),
                                             "status":libkeys.get(info.get("libkey")),
                                             "address":info.get("address"),
                                             "distance":info.get("distance"),
-                                            "uri":f'https://calil.jp/library/search?s={info.get("systemid")}?k={info.get("libkey")}'
+                                            "uri":f'https://calil.jp/library/{info.get("libid")}/{info.get("formal")}'
                                         }
                             output.append(out_info)
             # 距離の近い順にsort

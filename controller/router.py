@@ -93,11 +93,11 @@ def location_message(event):
         lib_info = get_library_service.adapt(lib_info)
         # 受け取った本が蔵書されているかのチェック
         zousho_info = get_zousho_service.get(user.book, lib_info)
+        print(zousho_info)
         column_info = []
         for i in zousho_info:
             column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"])]})
         reply_template = create_template(create_columns(column_info))
-        print(reply_template)
         # 最寄りの図書館の情報と蔵書状況を整形
         # print(zousho_info)
         status = user.is_status + 1
@@ -146,9 +146,3 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
-    """
-    [x] 蔵書検索モード
-    [x] 本 -> isbn
-    [x] 位置情報 -> 最寄りの図書館
-    [x] isbn 最寄りの図書館 -> 蔵書
-    """
