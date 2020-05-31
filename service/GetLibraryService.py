@@ -123,7 +123,7 @@ class GetZoushoService:
                                             "address":info.get("address"),
                                             "distance":info.get("distance"),
                                             "uri":f'https://calil.jp/library/{info.get("libid")}/{info.get("formal")}',
-                                            "mapuri":f'http://www.google.com/maps?q=%20({info.get("formal")})'
+                                            "mapuri":f'http://www.google.com/maps?q=%20{info.get("formal")}'
                                         }
                             output.append(out_info)
             # 距離の近い順にsort
