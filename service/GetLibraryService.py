@@ -47,6 +47,8 @@ class GetZoushoService:
     Output: 
         [
             {
+                "systemid":"",
+                "libkey": "",
                 "formal":"",
                 "status":true,
                 "address":""
@@ -61,10 +63,8 @@ class GetZoushoService:
         
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
         response = self.polling(self.zousho_url + query)
-        print(f"res:{response}")
+        # print(f"res:{response}")
         """
-        この辺のロジック見直す
-
         {
           "session": "2d83ba454f7a8bb9aad5b35c122f1773",
           "continue": 0,
@@ -111,30 +111,26 @@ class GetZoushoService:
             for id in system_ids:
                 libkeys = response["books"][isbn][id]["libkey"]
                 if (len(libkeys) != 0):
-                    print(f"libkeys:{libkeys}")
+                    # print(f"libkeys:{libkeys}")
                     # libkey毎に必要な値をlib_infoから取得する
                     for info in lib_info:
-                        print(f"info:{info}")
+                        # print(f"info:{info}")
                         if (info.get("libkey", "") in libkeys):
                             out_info = {
+                                            "systemid":info.get("systemid"),
+                                            "libkey":info.get("libkey"),
                                             "formal":info.get("formal"),
                                             "status":libkeys.get(info.get("libkey")),
                                             "address":info.get("address"),
-                                            "distance":info.get("distance")
+                                            "distance":info.get("distance"),
+                                            "uri":f'https://calil.jp/library/search?s={info.get("systemid")}?k={info.get("libkey")}'
                                         }
                             output.append(out_info)
-
-                    # output.append(list(map(lambda x: {
-                    #     "formal":x["formal"],
-                    #     "status":libkeys.get(x["libkey"]),
-                    #     "address":x["address"],
-                    #     "distance":x["distance"]
-                    #     } if x["libkey"] in libkeys else {},lib_info)))
             # 距離の近い順にsort
-            output.sort(key = lambda x: x.get("distance"))
+            if (len(output) > 0):
+                output.sort(key = lambda x: x.get("distance"))
         else:
             pass
-        print(output)
         return output
 
     def polling(self, url):

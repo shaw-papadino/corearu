@@ -8,7 +8,7 @@ from linebot import (
 
 from linebot.models import (
         MessageEvent, TextMessage, TextSendMessage,
-        LocationMessage
+        LocationMessage, URIAction, TemplateSendMessage,
 )
 
 from linebot.exceptions import (
@@ -30,6 +30,7 @@ from sqlalchemy.orm import Session
 from controller.db_create import SessionLocal
 
 from interfaces.quick_reply import quick_reply
+from interfaces.carousel import create_columns, create_template
 
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 router = APIRouter()
@@ -75,32 +76,35 @@ def location_message(event):
     uid = event.source.user_id
     # print(geocode)
     user = get(uid)
-    if (user is None):
+    if user is None or user.is_status == 0:
         reply = "「蔵書を検索する」と入力してください"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
 
-    elif (user.is_status == 1):
+    elif user.is_status == 1:
         reply = "本のタイトルを入力してください"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
-    elif (user.is_status == 2):
+    elif user.is_status == 2:
         # 最寄りの図書館を検索する
         lib_info = get_library_service.get(geocode)
-        # 不要なものを削除
         lib_info = get_library_service.adapt(lib_info)
         # 受け取った本が蔵書されているかのチェック
         zousho_info = get_zousho_service.get(user.book, lib_info)
+        column_info = []
+        for i in zousho_info:
+            column_info.append({"title": i["folmal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"])]})
+        reply_template = create_template(create_columns(column_info))
+        print(reply_template)
         # 最寄りの図書館の情報と蔵書状況を整形
-        # 整形したデータをユーザーに返却する
-        # 図書館の名前、ある/なし、距離(できたらgooglemapのリンク)
-        print(zousho_info)
-        reply = "できてるよ" 
+        # print(zousho_info)
+        status = user.is_status + 1
+        user = update(uid, "", 0)
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=reply))
+            TemplateSendMessage(alt_text = "library info", template = reply_template))
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -109,69 +113,42 @@ def handle_message(event):
     # jsonのkeyとは違うから注意
     uid = event.source.user_id
     user = get(uid)
-    if (message == "蔵書を検索する"):
+    if message == "蔵書を検索する":
         # ユーザー登録処理
-        if (user is  None):
+        if user is  None:
             user = create(uid)
+        elif user.is_status == 0:
+            user = update(uid, "", 1)
+
         reply = "本のタイトルを入力してください"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
-    elif (user is None):
+    elif user is None or user.is_status == 0:
         reply = "「蔵書を検索する」と入力してください"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
 
-    elif (user.is_status == 1):
+    elif user.is_status == 1:
         # isbn検索
         isbn = get_book_service.get(message)
         status = user.is_status + 1
-        print(status)
         user = update(uid, isbn, status)
-        print(user.is_status)
         reply = "下のボタンを押して現在地を送信してね"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply, quick_reply=quick_reply))
 
-    elif (user.is_status == 2):
+    elif user.is_status == 2:
         # 図書館蔵書検索
         reply = "蔵書検索をします"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
     """
-    user = get(uid)
-    if (user is  None):
-        if (message == "蔵書を検索する"):
-            user = create(uid)
-            reply = "本のタイトルを入力してください"
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=reply))
-        else:
-            print(event)
-    # if (uid in user_status.keys()):
-        #useridが登録されている場合
-        # print(user_status.keys())
-
-    else:
-        if (user.is_status == 1):
-            # isbn検索
-            isbn = get_book_service.get(message)
-            status = user.is_status + 1
-            user = update(uid, isbn, status)
-            print(user)
-            reply = "下のボタンを押して現在地を送信してね"
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=reply, quick_reply=quick_reply))
-        elif (user.is_status == 2):
-            # 図書館蔵書検索
-            pass
-    [] 蔵書検索モード
-    [] 本 -> isbn
-    [] 位置情報 -> 最寄りの図書館
-    [] isbn 最寄りの図書館 -> 蔵書
+    [x] 蔵書検索モード
+    [x] 本 -> isbn
+    [x] 位置情報 -> 最寄りの図書館
+    [x] isbn 最寄りの図書館 -> 蔵書
     """
