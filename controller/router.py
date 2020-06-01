@@ -122,7 +122,7 @@ def location_message(event):
         BackgroundTasks().add_task(get_zousho, user, lib_info, uid)
         message = "現在蔵書確認中です $"
         emojis = [{"index": 10, "product_id":"5ac1de17040ab15980c9b438","emojiId":"130"}]
-        line_bot_api.push_message(uid, message = TextSendMessage(text = message, emojis = emojis))
+        line_bot_api.push_message(uid, messages = TextSendMessage(text = message, emojis = emojis))
         """
         zousho_info = get_zousho_service.get(user.book, lib_info)
         print(f"3:{time.time() - s}")
