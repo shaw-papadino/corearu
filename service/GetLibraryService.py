@@ -62,7 +62,9 @@ class GetZoushoService:
         squery = ",".join(system_ids)
         
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
+        s = time.time()
         response = self.polling(self.zousho_url + query)
+        print(f"1:{time.time() - s}")
         # print(f"res:{response}")
         """
         {
@@ -84,24 +86,6 @@ class GetZoushoService:
                     },
                     "reserveurl": "https://libweb.city.setagaya.tokyo.jp/cgi-bin/detail?NUM=005942406&CTG=1&RTN=01&TM=142142838"
                   },
-                  "Kanagawa_Kawasaki": {
-                    "status": "OK",
-                    "libkey": {
-                      "宮前": "貸出可",
-                      "麻生": "貸出可",
-                      "幸": "貸出可",
-                      "中原": "貸出可",
-                      "川崎": "貸出可",
-                      "大師": "貸出可",
-                      "多摩": "貸出可"
-                    },
-                    "reserveurl": "http://www.library.city.kawasaki.jp/clis/detail?NUM=003059147&CTG=1&RTN=01&TM=142142979"
-                  },
-                  "Univ_Tamabi": {
-                    "status": "OK",
-                    "libkey": {},
-                    "reserveurl": ""
-                  }
             }
           }
         }
@@ -112,10 +96,8 @@ class GetZoushoService:
             for id in system_ids:
                 libkeys = response["books"][isbn][id]["libkey"]
                 if (len(libkeys) != 0):
-                    # print(f"libkeys:{libkeys}")
                     # libkey毎に必要な値をlib_infoから取得する
                     for info in lib_info:
-                        # print(f"info:{info}")
                         if (info.get("libkey", "") in libkeys):
                             out_info = {
                                             "libkey":info.get("libkey"),
@@ -132,6 +114,7 @@ class GetZoushoService:
                 output.sort(key = lambda x: x.get("distance"))
         else:
             pass
+        print(f"2:{time.time() - s}")
         return output
 
     def polling(self, url):

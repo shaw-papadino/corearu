@@ -72,6 +72,29 @@ async def callback(req: Request):
         abort(400)
     return {"status": "OK"}
 
+def get_zousho(user, lib_info, uid):
+        zousho_info = get_zousho_service.get(user.book, lib_info)
+        print(f"3:{time.time() - s}")
+        if len(zousho_info) != 0:
+            print(zousho_info)
+            column_info = []
+            for i in zousho_info:
+                column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
+            reply_template = create_template(create_columns(column_info))
+            # print(f"4:{time.time() - s}")
+            # 最寄りの図書館の情報と蔵書状況を整形
+            # print(zousho_info)
+            status = user.is_status + 1
+            user = update(uid, "", 0)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(alt_text = "library info", template = reply_template))
+        else:
+            reply = "近くの図書館に蔵書はされてなかったよ"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply))
+
 @handler.add(MessageEvent, message=LocationMessage)
 def location_message(event):
     geocode = [str(event.message.longitude), str(event.message.latitude)]
@@ -94,10 +117,13 @@ def location_message(event):
         # 最寄りの図書館を検索する
         s = time.time()
         lib_info = get_library_service.get(geocode)
-        print(f"1:{time.time() - s}")
         lib_info = get_library_service.adapt(lib_info)
-        print(f"2:{time.time() - s}")
         # 受け取った本が蔵書されているかのチェック
+        BackgroundTasks.add_task(get_zousho, user, lib_info, uid)
+        message = "現在蔵書確認中です $"
+        emojis = [{"index": 10, "product_id":"5ac1de17040ab15980c9b438","emojiId":"130"}]
+        line_bot_api.push_message(uid, message = TextSendMessage(text = message, emojis = emojis))
+        """
         zousho_info = get_zousho_service.get(user.book, lib_info)
         print(f"3:{time.time() - s}")
         if len(zousho_info) != 0:
@@ -106,7 +132,7 @@ def location_message(event):
             for i in zousho_info:
                 column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
             reply_template = create_template(create_columns(column_info))
-            print(f"4:{time.time() - s}")
+            # print(f"4:{time.time() - s}")
             # 最寄りの図書館の情報と蔵書状況を整形
             # print(zousho_info)
             status = user.is_status + 1
@@ -119,6 +145,7 @@ def location_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=reply))
+        """
 
 
 @handler.add(MessageEvent, message=TextMessage)
