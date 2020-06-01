@@ -1,5 +1,5 @@
 from fastapi import (
-        APIRouter, Request, Depends
+        APIRouter, Request, Depends, BackgroundTasks,
 )
 
 from linebot import (
@@ -31,6 +31,8 @@ from controller.db_create import SessionLocal
 
 from interfaces.quick_reply import quick_reply
 from interfaces.carousel import create_columns, create_template
+
+import time
 
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 router = APIRouter()
@@ -87,24 +89,37 @@ def location_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
+
     elif user.is_status == 2:
         # 最寄りの図書館を検索する
+        s = time.time()
         lib_info = get_library_service.get(geocode)
+        print(f"1:{time.time() - s}")
         lib_info = get_library_service.adapt(lib_info)
+        print(f"2:{time.time() - s}")
         # 受け取った本が蔵書されているかのチェック
         zousho_info = get_zousho_service.get(user.book, lib_info)
-        print(zousho_info)
-        column_info = []
-        for i in zousho_info:
-            column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
-        reply_template = create_template(create_columns(column_info))
-        # 最寄りの図書館の情報と蔵書状況を整形
-        # print(zousho_info)
-        status = user.is_status + 1
-        user = update(uid, "", 0)
-        line_bot_api.reply_message(
-            event.reply_token,
-            TemplateSendMessage(alt_text = "library info", template = reply_template))
+        print(f"3:{time.time() - s}")
+        if len(zousho_info) != 0:
+            print(zousho_info)
+            column_info = []
+            for i in zousho_info:
+                column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
+            reply_template = create_template(create_columns(column_info))
+            print(f"4:{time.time() - s}")
+            # 最寄りの図書館の情報と蔵書状況を整形
+            # print(zousho_info)
+            status = user.is_status + 1
+            user = update(uid, "", 0)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(alt_text = "library info", template = reply_template))
+        else:
+            reply = "近くの図書館に蔵書はされてなかったよ"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply))
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -133,9 +148,12 @@ def handle_message(event):
     elif user.is_status == 1:
         # isbn検索
         isbn = get_book_service.get(message)
-        status = user.is_status + 1
-        user = update(uid, isbn, status)
-        reply = "下のボタンを押して現在地を送信してね"
+        if len(isbn) != 0:
+            status = user.is_status + 1
+            user = update(uid, isbn, status)
+            reply = "下のボタンを押して現在地を送信してね"
+        else:
+            reply = "本を見つけることができなかったよ。"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply, quick_reply=quick_reply))
