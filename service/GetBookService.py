@@ -13,10 +13,10 @@ class GetBookService:
         book = Book(title = title)
         query = self.query_type[0] + ":" + book.title
         response = requests.get(self.gurl + query)
-        if (response.status_code == 200):
+        if response.status_code == 200:
             book_info = response.json()
             print(book_info)
-            if (book_info["totalItems"] > 0):
+            if book_info["totalItems"] > 0:
                 # book.authors = book_info["items"][0]["volumeInfo"].get("authors")
                 isbn = book_info["items"][0]["volumeInfo"].get("industryIdentifiers")
                 if isbn is not None:

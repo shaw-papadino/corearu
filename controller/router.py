@@ -177,7 +177,7 @@ def handle_message(event):
     elif user.is_status == 1:
         # isbn検索
         isbn = get_book_service.get(message)
-        if len(isbn) != 0:
+        if isbn is not None:
             status = user.is_status + 1
             user = update(uid, isbn, status)
             reply = "下のボタンを押して現在地を送信してね"

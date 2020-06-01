@@ -12,7 +12,7 @@ class GetLibraryService:
     def get(self, geocode, limit=5):
         query = "?appkey=" + APP_KEY + "&geocode=" + geocode[0] + "," + geocode[1] + "&limit=" + str(limit) + "&format=json&callback="
         response = requests.get(self.library_url + query)
-        if (response.status_code == 200):
+        if response.status_code == 200:
             lib_info = response.json()
 
             # print(f"lib:{lib_info}")
@@ -91,14 +91,14 @@ class GetZoushoService:
         }
         """
         output = []
-        if (response.get("books") is not None):
+        if response.get("books") is not None:
             system_ids = list(set(system_ids))
             for id in system_ids:
                 libkeys = response["books"][isbn][id]["libkey"]
-                if (len(libkeys) != 0):
+                if len(libkeys) != 0:
                     # libkey毎に必要な値をlib_infoから取得する
                     for info in lib_info:
-                        if (info.get("libkey", "") in libkeys):
+                        if info.get("libkey", "") in libkeys:
                             out_info = {
                                             "libkey":info.get("libkey"),
                                             "formal":info.get("formal"),
@@ -110,7 +110,7 @@ class GetZoushoService:
                                         }
                             output.append(out_info)
             # 距離の近い順にsort
-            if (len(output) > 0):
+            if len(output) > 0:
                 output.sort(key = lambda x: x.get("distance"))
         else:
             pass
@@ -120,7 +120,7 @@ class GetZoushoService:
     def polling(self, url):
         while True:
             response = requests.get(url)
-            if (response.status_code == 200):
+            if response.status_code == 200:
                 res = response.text.strip("();")
                 res = json.loads(res)
                 # res = response.json()
