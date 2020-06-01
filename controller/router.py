@@ -73,7 +73,7 @@ async def callback(req: Request):
         abort(400)
     return {"status": "OK"}
 
-async def get_zousho(event, user, lib_info, uid):
+def get_zousho(event, user, lib_info, uid):
         zousho_info = get_zousho_service.get(user.book, lib_info)
         if len(zousho_info) != 0:
             print(zousho_info)
@@ -96,7 +96,7 @@ async def get_zousho(event, user, lib_info, uid):
                 TextSendMessage(text=reply))
 
 @handler.add(MessageEvent, message=LocationMessage)
-async def location_message(event):
+def location_message(event):
     geocode = [str(event.message.longitude), str(event.message.latitude)]
     uid = event.source.user_id
     # print(geocode)
@@ -121,10 +121,10 @@ async def location_message(event):
         # 受け取った本が蔵書されているかのチェック
         # BackgroundTasks().add_task(get_zousho, event, user, lib_info, uid)
         loop = asyncio.get_event_loop()
-        await get_zousho(event, user, lib_info, uid)
         message = "現在蔵書を確認中です"
         # emojis = Emojis(index = 10, product_id = "5ac1de17040ab15980c9b438",emojiId = "130")
         line_bot_api.push_message(uid, messages = TextSendMessage(text = message))
+        get_zousho(event, user, lib_info, uid)
         """
         zousho_info = get_zousho_service.get(user.book, lib_info)
         print(f"3:{time.time() - s}")
