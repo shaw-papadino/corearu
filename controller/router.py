@@ -33,6 +33,7 @@ from interfaces.quick_reply import quick_reply
 from interfaces.carousel import create_columns, create_template
 
 import time
+import asyncio
 
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 router = APIRouter()
@@ -72,7 +73,7 @@ async def callback(req: Request):
         abort(400)
     return {"status": "OK"}
 
-def get_zousho(event, user, lib_info, uid):
+async def get_zousho(event, user, lib_info, uid):
         zousho_info = get_zousho_service.get(user.book, lib_info)
         if len(zousho_info) != 0:
             print(zousho_info)
@@ -118,11 +119,12 @@ def location_message(event):
         lib_info = get_library_service.get(geocode)
         lib_info = get_library_service.adapt(lib_info)
         # 受け取った本が蔵書されているかのチェック
-        BackgroundTasks().add_task(get_zousho, event, user, lib_info, uid)
+        # BackgroundTasks().add_task(get_zousho, event, user, lib_info, uid)
         message = "現在蔵書確認中です"
         # emojis = Emojis(index = 10, product_id = "5ac1de17040ab15980c9b438",emojiId = "130")
         line_bot_api.push_message(uid, messages = TextSendMessage(text = message))
-        # get_zousho(event, user, lib_info, uid)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(get_zousho(event, user, lib_info, uid))
         """
         zousho_info = get_zousho_service.get(user.book, lib_info)
         print(f"3:{time.time() - s}")
