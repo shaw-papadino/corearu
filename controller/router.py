@@ -181,11 +181,14 @@ def handle_message(event):
             status = user.is_status + 1
             user = update(uid, isbn, status)
             reply = "下のボタンを押して現在地を送信してね"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply, quick_reply=quick_reply))
         else:
-            reply = "本を見つけることができなかったよ。"
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=reply, quick_reply=quick_reply))
+            reply = "本を見つけることができなかったよ。\n※対応予定"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply))
 
     elif user.is_status == 2:
         # 図書館蔵書検索
