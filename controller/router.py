@@ -84,12 +84,12 @@ def get_zousho(event, user, lib_info, uid):
             # print(f"4:{time.time() - s}")
             # 最寄りの図書館の情報と蔵書状況を整形
             # print(zousho_info)
-            status = user.is_status + 1
             user = update(uid, "", 0)
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(alt_text = "library info", template = reply_template))
         else:
+            user = update(uid, "", 0)
             reply = "近くの図書館に蔵書はされてなかったよ"
             line_bot_api.reply_message(
                 event.reply_token,
