@@ -24,7 +24,7 @@ class GetBookService:
         response = requests.get(self.gurl + query)
         if response.status_code == 200:
             self.book_info = response.json()
-            book_length = book_info["totalItems"]
+            book_length = self.book_info["totalItems"]
             if book_length >= 3:
                 self.put(3)
             elif book_length > 0:
