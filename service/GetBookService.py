@@ -15,7 +15,7 @@ class GetBookService:
             image_link = self.book_info["items"][i]["volumeInfo"].get("imageLinks").get("thumbnail", "")
             if isbn is not None:
                 isbn = isbn[1]["identifier"]
-            self.books.append(Book(title, isbn, image_link))
+            self.books.append(Book(title = title, isbn = isbn, image_link = image_link))
     def get(self, title):
         #googlebooksapi
         # [{isbn: sss, title:sss,imagelink:sss},{},{}]
