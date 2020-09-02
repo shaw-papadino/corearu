@@ -20,7 +20,7 @@ class GetBookService:
         #googlebooksapi
         # [{isbn: sss, title:sss,imagelink:sss},{},{}]
         self.books = []
-        query = self.query_type[0] + ":" + book.title
+        query = self.query_type[0] + ":" + title
         response = requests.get(self.gurl + query)
         if response.status_code == 200:
             self.book_info = response.json()
