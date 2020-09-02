@@ -8,7 +8,7 @@ from linebot import (
 
 from linebot.models import (
         MessageEvent, TextMessage, TextSendMessage,
-        LocationMessage, URIAction, TemplateSendMessage,
+        LocationMessage, URIAction, TemplateSendMessage
 )
 
 from linebot.exceptions import (
@@ -81,9 +81,7 @@ def get_zousho(event, user, lib_info, uid):
             for i in zousho_info:
                 column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
             reply_template = create_template(create_columns(column_info))
-            # print(f"4:{time.time() - s}")
             # 最寄りの図書館の情報と蔵書状況を整形
-            # print(zousho_info)
             user = update(uid, "", 0)
             line_bot_api.reply_message(
                 event.reply_token,
@@ -99,7 +97,6 @@ def get_zousho(event, user, lib_info, uid):
 def location_message(event):
     geocode = [str(event.message.longitude), str(event.message.latitude)]
     uid = event.source.user_id
-    # print(geocode)
     user = get(uid)
     if user is None or user.is_status == 0:
         reply = "「蔵書を検索する」と入力してください"
@@ -119,35 +116,10 @@ def location_message(event):
         lib_info = get_library_service.get(geocode)
         lib_info = get_library_service.adapt(lib_info)
         # 受け取った本が蔵書されているかのチェック
-        # BackgroundTasks().add_task(get_zousho, event, user, lib_info, uid)
-        loop = asyncio.get_event_loop()
         message = "現在蔵書を確認中です"
         # emojis = Emojis(index = 10, product_id = "5ac1de17040ab15980c9b438",emojiId = "130")
         line_bot_api.push_message(uid, messages = TextSendMessage(text = message))
         get_zousho(event, user, lib_info, uid)
-        """
-        zousho_info = get_zousho_service.get(user.book, lib_info)
-        print(f"3:{time.time() - s}")
-        if len(zousho_info) != 0:
-            print(zousho_info)
-            column_info = []
-            for i in zousho_info:
-                column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
-            reply_template = create_template(create_columns(column_info))
-            # print(f"4:{time.time() - s}")
-            # 最寄りの図書館の情報と蔵書状況を整形
-            # print(zousho_info)
-            status = user.is_status + 1
-            user = update(uid, "", 0)
-            line_bot_api.reply_message(
-                event.reply_token,
-                TemplateSendMessage(alt_text = "library info", template = reply_template))
-        else:
-            reply = "近くの図書館に蔵書はされてなかったよ"
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=reply))
-        """
 
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -175,11 +147,12 @@ def handle_message(event):
             TextSendMessage(text=reply))
 
     elif user.is_status == 1:
-        # isbn検索
-        isbn = get_book_service.get(message)
-        if isbn is not None:
+        # [Book]
+        books = get_book_service.get(message)
+        if len(books) != 0:
             status = user.is_status + 1
-            user = update(uid, isbn, status)
+            print(books)
+            user = update(uid, books[0].isbn, status)
             reply = "下のボタンを押して現在地を送信してね"
             line_bot_api.reply_message(
                 event.reply_token,

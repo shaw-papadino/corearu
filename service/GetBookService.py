@@ -8,26 +8,31 @@ class GetBookService:
     """
     query_type = ["intitle", "inauthor", "inpublisher", "subject", "isbn", "lccn", "oclc"]
     gurl = "https://www.googleapis.com/books/v1/volumes?q="
+    def put(self, index):
+        for i in range(index):
+            isbn = self.book_info["items"][i]["volumeInfo"].get("industryIdentifiers")
+            title = self.book_info["items"][i]["volumeInfo"].get("title")
+            image_link = self.book_info["items"][i]["volumeInfo"].get("imageLinks").get("thumbnail", "")
+            if isbn is not None:
+                isbn = isbn[1]["identifier"]
+            self.books.append(Book(title, isbn, image_link))
     def get(self, title):
         #googlebooksapi
-        book = Book(title = title)
+        # [{isbn: sss, title:sss,imagelink:sss},{},{}]
+        self.books = []
         query = self.query_type[0] + ":" + book.title
         response = requests.get(self.gurl + query)
         if response.status_code == 200:
-            book_info = response.json()
-            print(book_info)
-            if book_info["totalItems"] > 0:
-                # book.authors = book_info["items"][0]["volumeInfo"].get("authors")
-                isbn = book_info["items"][0]["volumeInfo"].get("industryIdentifiers")
-                if isbn is not None:
-                    book.isbn = isbn[1]["identifier"]
-                else:
-                    book.isbn = None
+            self.book_info = response.json()
+            book_length = book_info["totalItems"]
+            if book_length >= 3:
+                self.put(3)
+            elif book_length > 0:
+                self.put(book_length)
             else:
-                # ない場合 {'kind': 'books#volumes', 'totalItems': 0}
-                # rakutenapi
-                book.isbn = None
+                pass
+        else:
+            pass
 
-
-        return book.isbn
+        return self.books
 
