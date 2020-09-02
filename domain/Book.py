@@ -16,4 +16,5 @@ class Book(BaseModel):
     @validator("image_link")
     def isImageLink(cls, v):
         if v == "":
-            return "https://3.bp.blogspot.com/-09TaaQbkXv4/WMZxD_LmjAI/AAAAAAABCg8/cnL_5x6RubUF1QG-LN1HTBR_EXuUtZckQCLcB/s400/kaban_sagasu_woman_komaru.png"
+            v = "https://3.bp.blogspot.com/-09TaaQbkXv4/WMZxD_LmjAI/AAAAAAABCg8/cnL_5x6RubUF1QG-LN1HTBR_EXuUtZckQCLcB/s400/kaban_sagasu_woman_komaru.png"
+        return v

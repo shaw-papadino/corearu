@@ -13,7 +13,6 @@ class GetBookService:
             isbn = self.book_info["items"][i]["volumeInfo"].get("industryIdentifiers")
             title = self.book_info["items"][i]["volumeInfo"].get("title")
             image_link = self.book_info["items"][i]["volumeInfo"].get("imageLinks").get("thumbnail", "")
-            print(self.book_info["items"][i]["volumeInfo"].get("imageLinks"))
             if isbn is not None:
                 isbn = isbn[1]["identifier"]
             self.books.append(Book(title = title, isbn = isbn, image_link = image_link))
