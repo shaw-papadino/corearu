@@ -95,7 +95,7 @@ class GetZoushoService:
             system_ids = list(set(system_ids))
             print(response["books"])
             for id in system_ids:
-                libkeys = response["books"][isbn][id].get("libkeys", "")
+                libkeys = response["books"][isbn][id].get("libkey", "")
                 if len(libkeys) != 0:
                     # libkey毎に必要な値をlib_infoから取得する
                     for info in lib_info:
