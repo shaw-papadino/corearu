@@ -153,6 +153,7 @@ def handle_message(event):
             status = user.is_status + 1
             print(books)
             user = update(uid, books[0].isbn, status)
+            print(user)
             reply = "下のボタンを押して現在地を送信してね"
             line_bot_api.reply_message(
                 event.reply_token,
