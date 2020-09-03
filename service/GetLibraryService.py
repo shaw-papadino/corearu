@@ -94,7 +94,7 @@ class GetZoushoService:
         if response.get("books") is not None:
             system_ids = list(set(system_ids))
             for id in system_ids:
-                libkeys = response["books"][isbn][id]["libkey"]
+                libkeys = response["books"][isbn][id].get("libkeys", "")
                 if len(libkeys) != 0:
                     # libkey毎に必要な値をlib_infoから取得する
                     for info in lib_info:
