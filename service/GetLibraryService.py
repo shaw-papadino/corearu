@@ -93,6 +93,7 @@ class GetZoushoService:
         output = []
         if response.get("books") is not None:
             system_ids = list(set(system_ids))
+            print(response["books"])
             for id in system_ids:
                 libkeys = response["books"][isbn][id].get("libkeys", "")
                 if len(libkeys) != 0:
