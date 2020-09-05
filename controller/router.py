@@ -105,14 +105,12 @@ def get_zousho(event, user, lib_info, uid):
                 event.reply_token,
                 TextSendMessage(text=reply))
 
-def send_candidate_books(books):
+def get_books_template(books):
     column_info = []
     for i, book in enumerate(books):
         column_info.append({"title" : book.title, "image": book.image_link, "actions": [PostbackAction(label = "この本を検索する", data = f"id={i}&title={book.title}")]})
-    reply_template = create_template(create_columns(column_info))
-    line_bot_api.reply_message(
-        event.reply_token,
-        TemplateSendMessage(alt_text = "book info", template = reply_template))
+    return create_template(create_columns(column_info))
+    
 
 
 @handler.add(MessageEvent, message=LocationMessage)
@@ -173,7 +171,10 @@ def handle_message(event):
         books = get_book_service.get(message)
         if len(books) != 0:
             status = user.is_status + 1
-            send_candidate_books(books)
+            reply_template = get_books_template(books)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(alt_text = "book info", template = reply_template))
             # カルーセルで検索する本の候補を表示する
             #user = update(uid, books[0].isbn, status)
             #reply = "下のボタンを押して現在地を送信してね"
