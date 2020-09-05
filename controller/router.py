@@ -108,7 +108,8 @@ def get_zousho(event, user, lib_info, uid):
 def get_books_template(books):
     column_info = []
     for i, book in enumerate(books):
-        column_info.append({"title" : book.title, "image": book.image_link, "actions": [PostbackAction(label = "この本を検索する", data = f"id={i}&title={book.title}")]})
+        #TODO Firebaseなりで画像をアップロードしてURLを取得しなあかんな
+        column_info.append({"text" : book.title, "actions": [PostbackAction(label = "この本を検索する", data = f"id={i}&title={book.title}")]})
     return create_template(create_columns(column_info))
     
 
