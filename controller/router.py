@@ -106,7 +106,7 @@ def get_zousho(event, user, lib_info, uid):
                 TextSendMessage(text=reply))
 
 def send_candidate_books(books):
-    colomn_info = []
+    column_info = []
     for i, book in enumerate(books):
         column_info.append({"title" : book.title, "image": book.image_link, "actions": [PostbackAction(label = "この本を検索する", data = f"id={i}&title={book.title}")]})
     reply_template = create_template(create_columns(column_info))
