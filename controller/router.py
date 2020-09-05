@@ -75,16 +75,15 @@ async def callback(req: Request):
 
 @handler.add(PostbackEvent)
 def postback(event):
-    msg = event.postback.data
-    print(msg)
+    _, title = event.postback.data.split("&")
+    title = title.replace("title=", "")
+    uid = event.source.user_id
     #選んだ本を登録する
-    #user = update(uid, books[0].isbn, status)
-
+    user = update(uid, title, 2)
     #位置情報の入力を促す
     reply = "下のボタンを押して現在地を送信してね"
-    line_bot_api.push_message(
-        event.reply_token,
-        TextSendMessage(text=reply, quick_reply=quick_reply))
+    line_bot_api.push_message(uid, messages = TextSendMessage(text=reply, quick_reply=quick_reply))
+
 def get_zousho(event, user, lib_info, uid):
         zousho_info = get_zousho_service.get(user.book, lib_info)
         if len(zousho_info) != 0:
@@ -171,7 +170,6 @@ def handle_message(event):
         # [Book]
         books = get_book_service.get(message)
         if len(books) != 0:
-            status = user.is_status + 1
             reply_template = get_books_template(books)
             line_bot_api.reply_message(
                 event.reply_token,
