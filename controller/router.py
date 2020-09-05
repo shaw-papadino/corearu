@@ -150,9 +150,8 @@ def handle_message(event):
         books = get_book_service.get(message)
         if len(books) != 0:
             status = user.is_status + 1
-            print(books)
+            # カルーセルで検索する本の候補を表示する
             user = update(uid, books[0].isbn, status)
-            print(user.book)
             reply = "下のボタンを押して現在地を送信してね"
             line_bot_api.reply_message(
                 event.reply_token,
