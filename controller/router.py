@@ -8,7 +8,8 @@ from linebot import (
 
 from linebot.models import (
         MessageEvent, TextMessage, TextSendMessage,
-        LocationMessage, URIAction, TemplateSendMessage
+        LocationMessage, URIAction, TemplateSendMessage,
+        PostbackAction, PostbackEvent
 )
 
 from linebot.exceptions import (
@@ -72,6 +73,18 @@ async def callback(req: Request):
         abort(400)
     return {"status": "OK"}
 
+@handler.add(PostbackEvent)
+def postback(event):
+    msg = event.postback.data
+    print(msg)
+    #選んだ本を登録する
+    #user = update(uid, books[0].isbn, status)
+
+    #位置情報の入力を促す
+    reply = "下のボタンを押して現在地を送信してね"
+    line_bot_api.push_message(
+        event.reply_token,
+        TextSendMessage(text=reply, quick_reply=quick_reply))
 def get_zousho(event, user, lib_info, uid):
         zousho_info = get_zousho_service.get(user.book, lib_info)
         if len(zousho_info) != 0:
@@ -91,6 +104,16 @@ def get_zousho(event, user, lib_info, uid):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=reply))
+
+def send_candidate_books(books):
+    colomn_info = []
+    for i, book in enumerate(books):
+        column_info.append({"title" : book.title, "image": book.image_link, "actions": [PostbackAction(label = "この本を検索する", data = f"id={i}&title={book.title}")]})
+    reply_template = create_template(create_columns(column_info))
+    line_bot_api.reply_message(
+        event.reply_token,
+        TemplateSendMessage(alt_text = "book info", template = reply_template))
+
 
 @handler.add(MessageEvent, message=LocationMessage)
 def location_message(event):
@@ -150,12 +173,13 @@ def handle_message(event):
         books = get_book_service.get(message)
         if len(books) != 0:
             status = user.is_status + 1
+            send_candidate_books(books)
             # カルーセルで検索する本の候補を表示する
-            user = update(uid, books[0].isbn, status)
-            reply = "下のボタンを押して現在地を送信してね"
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=reply, quick_reply=quick_reply))
+            #user = update(uid, books[0].isbn, status)
+            #reply = "下のボタンを押して現在地を送信してね"
+            #line_bot_api.reply_message(
+            #    event.reply_token,
+            #    TextSendMessage(text=reply, quick_reply=quick_reply))
         else:
             reply = "本を見つけることができなかったよ。\n※対応予定"
             line_bot_api.reply_message(

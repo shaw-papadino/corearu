@@ -16,12 +16,19 @@ def create_columns(column_info):
     """
     columns = []
     for i in column_info:
-        columns.append(CarouselColumn(
-                thumbnail_image_url = i.get("image", ""),
-                title = i.get("title", ""),
-                text = i.get("text", ""),
-                actions = i.get("actions", [])
-                ))
+        if i.get("image,", "") != "":
+            columns.append(CarouselColumn(
+                    thumbnail_image_url = i.get("image", ""),
+                    title = i.get("title", ""),
+                    text = i.get("text", ""),
+                    actions = i.get("actions", [])
+                    ))
+        else:
+            columns.append(CarouselColumn(
+                    title = i.get("title", ""),
+                    text = i.get("text", ""),
+                    actions = i.get("actions", [])
+                    ))
     return columns
 
 def create_template(columns):
