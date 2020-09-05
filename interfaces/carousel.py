@@ -1,14 +1,14 @@
 from linebot.models import (
             CarouselTemplate, CarouselColumn,
 )
-"""
+None"
 CarouselColumn をfor文で生成
 templateに入れてかえエス
-"""
+None"
 
 def create_columns(column_info):
     """
-    [{"image":"",
+    [{"image":None,
     "title":,
     "text":,
     "actions":[PostbackAction(....)]},]
@@ -16,19 +16,11 @@ def create_columns(column_info):
     """
     columns = []
     for i in column_info:
-        if i.get("image,", "") != "":
-            columns.append(CarouselColumn(
-                    thumbnail_image_url = i.get("image", ""),
-                    title = i.get("title", ""),
-                    text = i.get("text", ""),
-                    actions = i.get("actions", [])
-                    ))
-        else:
-            columns.append(CarouselColumn(
-                    title = i.get("title", ""),
-                    text = i.get("text", ""),
-                    actions = i.get("actions", [])
-                    ))
+        columns.append(CarouselColumn(
+                thumbnail_image_url = i.get("image", None),
+                title = i.get("title", None),
+                text = i.get("text", None),
+                actions = i.get("actions", None)
     return columns
 
 def create_template(columns):
