@@ -1,10 +1,10 @@
 from linebot.models import (
             CarouselTemplate, CarouselColumn,
 )
-None"
+"""
 CarouselColumn をfor文で生成
 templateに入れてかえエス
-None"
+"""
 
 def create_columns(column_info):
     """
@@ -21,6 +21,7 @@ def create_columns(column_info):
                 title = i.get("title", None),
                 text = i.get("text", None),
                 actions = i.get("actions", None)
+                ))
     return columns
 
 def create_template(columns):
