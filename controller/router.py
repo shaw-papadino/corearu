@@ -91,7 +91,8 @@ def postback(event):
 def get_zousho(event, user, lib_info, uid):
         zousho_info = get_zousho_service.get(user.book, lib_info)
         if len(zousho_info) != 0:
-            print(zousho_info)
+            message = "探している本はここの図書館にあるよ"
+            line_bot_api.push_message(uid, messages = TextSendMessage(text = message))
             column_info = []
             for i in zousho_info:
                 column_info.append({"title": i["formal"], "text": i["status"], "actions" :[URIAction(label = "図書館情報ページ",uri = i["uri"]),URIAction(label = "図書館の場所",uri = i["mapuri"])]})
@@ -140,8 +141,7 @@ def location_message(event):
         lib_info = get_library_service.get(geocode)
         lib_info = get_library_service.adapt(lib_info)
         # 受け取った本が蔵書されているかのチェック
-        message = "現在蔵書を確認中です"
-        # emojis = Emojis(index = 10, product_id = "5ac1de17040ab15980c9b438",emojiId = "130")
+        message = "本を探しています"
         line_bot_api.push_message(uid, messages = TextSendMessage(text = message))
         get_zousho(event, user, lib_info, uid)
 
