@@ -79,11 +79,11 @@ async def callback(req: Request):
 
 @handler.add(PostbackEvent)
 def postback(event):
-    _, title = event.postback.data.split("&")
-    title = title.replace("title=", "")
+    _, isbn = event.postback.data.split("&")
+    isbn = title.replace("isbn=", "")
     uid = event.source.user_id
     #選んだ本を登録する
-    user = update(uid, title, 2)
+    user = update(uid, isbn, 2)
     #位置情報の入力を促す
     reply = "下のボタンを押して現在地を送信してね"
     line_bot_api.push_message(uid, messages = TextSendMessage(text=reply, quick_reply=quick_reply))
@@ -112,7 +112,7 @@ def get_books_template(books):
     column_info = []
     for i, book in enumerate(books):
         #TODO Firebaseなりで画像をアップロードしてURLを取得しなあかんな
-        column_info.append({"text" : book.title, "actions": [PostbackAction(label = "この本を検索する", data = f"id={i}&title={book.title}")]})
+        column_info.append({"text" : book.title, "actions": [PostbackAction(label = "この本を検索する", data = f"id={i}&isbn={book.isbn}")]})
     return create_template(create_columns(column_info))
     
 
@@ -174,7 +174,6 @@ def handle_message(event):
         # [Book]
         books = get_book_service.get(message)
         if len(books) != 0:
-            #TODO push_messageでどの本を検索しますか。を送信したい
             reply_template = get_books_template(books)
             line_bot_api.reply_message(
                 event.reply_token,
