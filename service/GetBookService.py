@@ -11,12 +11,13 @@ class GetBookService:
     def put(self, index):
         for i in range(index):
             isbn = self.book_info["items"][i]["volumeInfo"].get("industryIdentifiers")
-            title = self.book_info["items"][i]["volumeInfo"].get("title")
-            image_link = self.book_info["items"][i]["volumeInfo"].get("imageLinks").get("thumbnail", "")
             if isbn is not None and isbn[0]["type"] in "ISBN":
                 isbn = isbn[0]["identifier"]
             else:
-                pass
+                continue
+            title = self.book_info["items"][i]["volumeInfo"].get("title")
+            image_link = self.book_info["items"][i]["volumeInfo"].get("imageLinks").get("thumbnail", "")
+
             self.books.append(Book(title = title, isbn = isbn, image_link = image_link))
     def get(self, title):
         #googlebooksapi

@@ -173,7 +173,7 @@ def handle_message(event):
     elif user.is_status == 1:
         # [Book]
         books = get_book_service.get(message)
-        if len(books) != 0 and books[0].isbn is not None:
+        if len(books) != 0:
             reply_template = get_books_template(books)
             line_bot_api.reply_message(
                 event.reply_token,
