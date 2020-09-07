@@ -80,7 +80,7 @@ async def callback(req: Request):
 @handler.add(PostbackEvent)
 def postback(event):
     _, isbn = event.postback.data.split("&")
-    isbn = title.replace("isbn=", "")
+    isbn = isbn.replace("isbn=", "")
     uid = event.source.user_id
     #選んだ本を登録する
     user = update(uid, isbn, 2)
@@ -178,12 +178,6 @@ def handle_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(alt_text = "book info", template = reply_template))
-            # カルーセルで検索する本の候補を表示する
-            #user = update(uid, books[0].isbn, status)
-            #reply = "下のボタンを押して現在地を送信してね"
-            #line_bot_api.reply_message(
-            #    event.reply_token,
-            #    TextSendMessage(text=reply, quick_reply=quick_reply))
         else:
             reply = "本を見つけることができなかったよ。\n※対応予定"
             line_bot_api.reply_message(
