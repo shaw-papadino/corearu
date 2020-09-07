@@ -61,6 +61,10 @@ def users(db: Session = Depends(dao.get_db)):
     user = get("1")
     print(user)
 
+@router.get("/healthcheck")
+def healthcheck():
+    return {"status": "OK"}
+
 @router.post("/callback")
 async def callback(req: Request):
     signature = req.headers.get("X-Line-Signature")
@@ -170,6 +174,7 @@ def handle_message(event):
         # [Book]
         books = get_book_service.get(message)
         if len(books) != 0:
+            #TODO push_messageでどの本を検索しますか。を送信したい
             reply_template = get_books_template(books)
             line_bot_api.reply_message(
                 event.reply_token,
