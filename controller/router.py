@@ -173,13 +173,13 @@ def handle_message(event):
     elif user.is_status == 1:
         # [Book]
         books = get_book_service.get(message)
-        if len(books) != 0:
+        if len(books) != 0 and books[0].isbn is not None:
             reply_template = get_books_template(books)
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(alt_text = "book info", template = reply_template))
         else:
-            reply = "本を見つけることができなかったよ。\n※対応予定"
+            reply = f"「{message}」を見つけることができなかったよ。\n※対応予定"
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=reply))
