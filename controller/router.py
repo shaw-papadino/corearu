@@ -167,7 +167,7 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=reply))
     elif user is None or user.is_status == 0:
-        reply = "「蔵書を検索する」と入力してください"
+        reply = "リッチメニューをタップして「蔵書を検索する」をタップしてください"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply))
