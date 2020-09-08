@@ -9,8 +9,8 @@ class Book(BaseModel):
 
     @validator("isbn")
     def isbn_13(cls, v):
-        if len(v) != 13:
-            raise ValidationError("must be 13 characters")
+        if len(v) != 10 or len(v) != 13:
+            raise ValidationError("must be 10 or 13 characters")
         return v
 
     @validator("image_link")
