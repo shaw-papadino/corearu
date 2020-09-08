@@ -56,11 +56,6 @@ def update(user_id: str, user_book: str, user_status: int, db: Session = Session
     user = dao.update_user(user_id, user_book, user_status, db)
     return user
 
-@router.get("/users")
-def users(db: Session = Depends(dao.get_db)):
-    user = get("1")
-    print(user)
-
 @router.get("/healthcheck")
 def healthcheck():
     return {"status": "OK"}
@@ -137,13 +132,20 @@ def location_message(event):
 
     elif user.is_status == 2:
         # 最寄りの図書館を検索する
-        s = time.time()
         lib_info = get_library_service.get(geocode)
         lib_info = get_library_service.adapt(lib_info)
         # 受け取った本が蔵書されているかのチェック
         message = "本を探しています"
         line_bot_api.push_message(uid, messages = TextSendMessage(text = message))
-        get_zousho(event, user, lib_info, uid)
+        try:
+            get_zousho(event, user, lib_info, uid)
+        except Exception as e:
+            print(f"[ERROR]{e}")
+            user = update(uid, "", 0)
+            reply = "その本は調べることができなかったよ、ごめんね。対策を考えるね。"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply))
 
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -171,7 +173,6 @@ def handle_message(event):
             TextSendMessage(text=reply))
 
     elif user.is_status == 1:
-        # [Book]
         books = get_book_service.get(message)
         if len(books) != 0:
             reply_template = get_books_template(books)

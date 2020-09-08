@@ -11,12 +11,16 @@ class GetLibraryService:
     library_url = "http://api.calil.jp/library"
     def get(self, geocode, limit=5):
         query = "?appkey=" + APP_KEY + "&geocode=" + geocode[0] + "," + geocode[1] + "&limit=" + str(limit) + "&format=json&callback="
-        response = requests.get(self.library_url + query)
-        if response.status_code == 200:
-            lib_info = response.json()
+        try:
+            response = requests.get(self.library_url + query)
+            if response.status_code == 200:
+                lib_info = response.json()
+        except Exception as e:
+            print(f"[ERROR]{e}")
+        finally:
+            pass
+        return lib_info
 
-            # print(f"lib:{lib_info}")
-            return lib_info
             
     def adapt(self, lib_info,l = ["libid", "libkey", "distance", "geocode", "systemid", "address", "formal"]
 ):
@@ -62,10 +66,7 @@ class GetZoushoService:
         squery = ",".join(system_ids)
         
         query = "?appkey=" + APP_KEY + "&isbn=" + isbn + "&systemid=" + squery + "&format=json&callback=" 
-        s = time.time()
         response = self.polling(self.zousho_url + query)
-        print(f"1:{time.time() - s}")
-        # print(f"res:{response}")
         """
         {
           "session": "2d83ba454f7a8bb9aad5b35c122f1773",
@@ -93,7 +94,6 @@ class GetZoushoService:
         output = []
         if response.get("books") is not None:
             system_ids = list(set(system_ids))
-            print(response["books"])
             for id in system_ids:
                 libkeys = response["books"][isbn][id].get("libkey", "")
                 if len(libkeys) != 0:
@@ -115,19 +115,21 @@ class GetZoushoService:
                 output.sort(key = lambda x: x.get("distance"))
         else:
             pass
-        print(f"2:{time.time() - s}")
+
         return output
 
     def polling(self, url):
-        while True:
-            response = requests.get(url)
-            if response.status_code == 200:
-                res = response.text.strip("();")
-                res = json.loads(res)
-                # res = response.json()
-                if (res["continue"] == 0):
-                    return res
-            time.sleep(1)
+        try:
+            while True:
+                response = requests.get(url)
+                if response.status_code == 200:
+                    res = response.text.strip("();")
+                    res = json.loads(res)
+                    if (res["continue"] == 0):
+                        return res
+                time.sleep(1)
+        except Exception as e:
+            print(f"[ERROR]{e}")
 
 if __name__=="__main__":
     test_adapt()
