@@ -17,7 +17,6 @@ class GetBookService:
                 continue
             title = self.book_info["items"][i]["volumeInfo"].get("title")
             image_link = self.book_info["items"][i]["volumeInfo"].get("imageLinks").get("thumbnail", "")
-
             self.books.append(Book(title = title, isbn = isbn, image_link = image_link))
     def get(self, title):
         #googlebooksapi
