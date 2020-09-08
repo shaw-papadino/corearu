@@ -11,7 +11,7 @@ class GetBookService:
     def put(self, index):
         for i in range(index):
             isbn = self.book_info["items"][i]["volumeInfo"].get("industryIdentifiers")
-            if isbn is not None and isbn[0]["type"] in "ISBN":
+            if isbn is not None and "ISBN" in isbn[0]["type"]:
                 isbn = isbn[0]["identifier"]
             else:
                 continue
